@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FINANSPACE</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&style=outlined" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'web/bootstrap-5.0.2-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+    <script src="{% static 'web/bootstrap-5.0.2-dist/js/bootstrap.min.js' %}"></script>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark principal_color">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ">
+                <li class="nav-item">
+                    <a class="nav-link">INICIO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">ACERCA DE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">NORMATIVA</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row banner">
+            <div class="cover">
+                {% block iconBanner %}
+
+                {% endblock %}
+            </div>
+        </div>
+        <div class="row separador principal_color"></div>
+        <div class="row">
+            {% block application %}
+                
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>
