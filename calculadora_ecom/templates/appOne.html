@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block iconBanner %}
+    <div class="logo">
+        <img src="{% static 'web/img/finspace.png' %}" alt="icon" class="bannerImg">
+    </div>
+{% endblock %}
+
+{% block application %}
+    <div class="container appSpace">
+        <div class="row">
+            <div class="col-2 configurador">
+                <h1>CONFIGURADOR</h1>
+            </div>
+            <div class="col-2 variables">
+                <h2>VARIABLES</h2>
+            </div>
+            <div class="col resultados">
+                <h3> RESULTADOS</h3>
+            </div>
+        </div>
+    </div>
+{% endblock %}
