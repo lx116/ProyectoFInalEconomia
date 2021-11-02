@@ -37,6 +37,12 @@
 {
     width: 100vw;
     height: 70vh;
+    font-family: 'Montserrat';
+}
+.appSpace h3
+{
+    text-align: center;
+    margin-top: 20px;
 }
 .configurador
 {
@@ -77,6 +83,25 @@
 {
     width: 100%;
     height: 100%;
+}
+
+
+.centerTextAling
+{
+    text-align: center;
+    align-items: center;
+}
+.margin_TopDef
+{
+    margin-top: 30px;
+}
+.margin_TopRel
+{
+    margin-top: 10px;
+}
+.inputSpecial input
+{
+    width: 50px;
 }
 body
 {
