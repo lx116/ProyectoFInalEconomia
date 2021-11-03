@@ -2,13 +2,14 @@ $(document).ready(function (){
     var seleccionarFormula
     var objeto = {}
 
-    $(".seleccionarFOrmula").keyup(function () {
+    $(".seleccionarFormula").keyup(function () {
         seleccionarFormula = $(this).val();
 
     })
 
     $(".VP").keyup(function () {
         objeto['VP'] = $(this).val();
+
 
     })
     $(".VF").keyup(function () {
@@ -17,6 +18,7 @@ $(document).ready(function (){
     })
     $(".A").keyup(function () {
         objeto['A'] = $(this).val();
+        console.log(objeto)
 
     })
     $(".G").keyup(function () {
@@ -31,21 +33,35 @@ $(document).ready(function (){
         objeto['interes'] = $(this).val();
 
     })
-    $(".n").keyup(function () {
+    $(".N").keyup(function () {
         objeto['n'] = $(this).val();
 
     })
 
     switch (seleccionarFormula) {
         case 1:
+
+            var contendor=
+                $("<div class='container'>" +
+                    "<div class='row margin_TopDef'><label for='A'>A<input type='number' class='A' id='A'></label></div>" +
+                    "<div class='row margin_TopDef'><label for='n'>N<input type='number' class='n' id='n'></label></div>"+
+                    "<div class='row margin_TopDef'><label for='interes'>Interes<input type='number' class='interes' id='interes'></label></div>"+
+                    "<div class='row margin_TopDef'><button class='calcular'>CALCULAR</button></div> "+
+                    "</div>")
+                $('abc').append(contendor)
+
             $("body").on('click','.calcular',function () {
-                var convertToJson = objeto
+            var convertJson = JSON.stringify(objeto)
+            $.post("/home/anualidadVencida__VP/",{data:convertJson},function (data){
 
-                $.post("/home/anualidadVencida__VP/",{data:convertToJson},function (data){
+        })
+                break;
 
-                })
-            })
-
+    })
     }
+
+
+
+
 
 })

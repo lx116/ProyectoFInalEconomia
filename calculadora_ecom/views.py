@@ -2,6 +2,7 @@ from django.http import request, response, HttpResponse, HttpResponseRedirect
 import json, math
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def renderHome(request):
@@ -11,16 +12,22 @@ def renderHome(request):
 # formulas
 
 # Valor presente de una Anualidad Vencida y Pagos
-
+@csrf_exempt
 def anualidadVencida__VP(request):
-    req = request.POST['data']
-    data = json.loads(req)
 
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
 
-    vp = A * ((((1 + interes) ^ n) - 1) / (interes * ((1 + interes) ^ n)))
+    res = request.POST['data']
+    data = json.loads(res)
+
+
+
+    A = float(data.get('A'))
+    n = float(data.get('n'))
+    interes = float(data.get('interes'))/100
+
+    vp = A * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
+
+    vp = "{:.2f}".format(vp)
 
     return JsonResponse({'resultados': vp})
 
@@ -29,11 +36,13 @@ def anualidadVencida__VP_A(request):
     req = request.POST['data']
     data = json.loads(req)
 
-    VP = data.get('VP')
-    n = data.get('n')
-    interes = data.get('interes')
+    VP = float(data.get('VP'))
+    n = float(data.get('n'))
+    interes = float(data.get('interes'))
 
-    A = VP * ((((1 + interes) ^ n) - 1) / (interes * ((1 + interes) ^ n)))
+    A = VP * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
+
+    A = "{:.2f}".format(A)
 
     return JsonResponse({'resultados': A})
 
@@ -153,7 +162,7 @@ def anualidadAnticipada__A_VF(request):
     interes = data.get('interes')
     VF = data.get('VF')
 
-    A = VF / (math.pow((1 + interes), (n + 1)) - ((1 + interes) ^ n)) / interes
+    A = VF / (math.pow((1 + interes), (n + 1)) - ((1 + interes) ** n)) / interes
 
     return JsonResponse({'reulstados': A})
 
@@ -286,7 +295,7 @@ def gradienteGeometricoDecrecietne(request):
     J = data.get('J')
 
     if interes != J:
-        VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J) ^ n))) / ((interes + J) * math.pow((1 + interes), n)))
+        VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J) ** n))) / ((interes + J) * math.pow((1 + interes), n)))
     elif interes == J:
         VP = (A / (1 + interes))
 
