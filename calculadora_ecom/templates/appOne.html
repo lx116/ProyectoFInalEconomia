@@ -14,81 +14,47 @@
             <div class="col-2 configurador">
                 <h3>CONFIGURADOR</h3>
                 <div class="container">
+                    <div class="row margin_TopDef centerTextAling"><h4>¿Que desea encontrar?</h4></div>
                     <div class="row margin_TopDef centerTextAling">
                         <label for="seleccionarEvento">
                             <select class="sea" id="seleccionarEvento">
                                 <option value="none">----</option>
                                 <option value="VP">Valor presente</option>
                                 <option value="VF">Valor futuro</option>
+                                <option value="VP_A">Anualidad valor presente</option>
+                                <option value="VF_A">Anualidad valor futuro</option>
                             </select>
                         </label>
                     </div>
                     <div class="row margin_TopDef centerTextAling"><h4>TIPO DE TABLA:</h4></div>
-                    <div class="row margin_TopRel ">
-                        <div class="col">
-                            <h6>Amortizacion</h6>
-                        </div>
-                        <div class="col">
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="col">
-                            <h6>Capitalizacion</h6>
-                        </div>
+                    <div class="row margin_TopDef centerTextAling ">
+                        <label for="seleccionarTabla">
+                            <select id="seleccionarTabla" class="seb">
+                                <option value="none">----</option>
+                                <option value="amort">Amortizacion</option>
+                                <option value="capts">Capitalizacion</option>
+                            </select>
+                        </label>
                     </div>
                     <div class="row margin_TopDef centerTextAling"><h4>TIPO DE SERIE:</h4></div>
-                    <div class="row margin_TopRel ">
-                        <div class="col">
-                            <h6>Uniforme</h6>
-                        </div>
-                        <div class="col">
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="col">
-                            <h6>Variable</h6>
-                        </div>
+                    <div class="row margin_TopDef centerTextAling">
+                        <label for="seleccionarSerie">
+                            <select id="seleccionarSerie" class="sec">
+                                <option value="none">----</option>
+                                <option value="uniform">Uniforme</option>
+                                <option value="varia">Variable</option>
+                            </select>
+                        </label>
                     </div>
                     <div class="row margin_TopDef centerTextAling"><h4>MODALIDAD DE PAGO:</h4></div>
-                    <div class="row margin_TopRel ">
-                        <div class="col">
-                            <h6>Anticipado</h6>
-                        </div>
-                        <div class="col">
-                            <label class="switch">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="col">
-                            <h6>Vencido</h6>
-                        </div>
-                    </div>
-                    <div class="row margin_TopDef ">
-                        <div class="col-8">
-                            <h5>Peridodo de gracia:</h5>
-                        </div>
-                        <div class="col-2">
-                            <label class="switch ">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row margin_TopDef ">
-                        <div class="col-8">
-                            <h5>Tiempo del periodo de gracia:</h5>
-                        </div>
-                        <div class="col-2">
-                            <label class="inputSpecial" for="perdido_gracia">
-                                <input  id="perdido_gracia" type="number">
-                            </label>
-
-                        </div>
+                    <div class="row margin_TopDef centerTextAling ">
+                        <label for="seleccionarPago">
+                            <select id="seleccionarPago" class="sed">
+                                <option value="none">----</option>
+                                <option value="anti">Anticipada</option>
+                                <option value="venc">Vencida</option>
+                            </select>
+                        </label>
                     </div>
                 </div>
 
@@ -96,43 +62,43 @@
             <div class="col-2 variables">
                 <h3>VARIABLES</h3>
                 <div class="container abc">
-                    <div class="row margin_TopDef">
-                        <label for="VP">
+                    <div class="row margin_TopDef" id="VP_View">
+                        <label for="VP" >
                             VP
                             <input type="number" class="VP" id="VP">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
+                    <div class="row margin_TopDef" id="VF_View">
                         <label for="VF">
                             VF
                             <input type="number" class="VF" id="VF">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
-                        <label for="interes">
+                    <div class="row margin_TopDef" id="Interes_View">
+                        <label for="interes" >
                             Interes
                             <input type="number" class="interes" id="interes">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
+                    <div class="row margin_TopDef" id="G_View">
                         <label for="G">
                             G
                             <input type="number" class="G" id="G">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
+                    <div class="row margin_TopDef" id="A_View">
                         <label for="A">
                             A
                             <input type="number" class="A" id="A">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
+                    <div class="row margin_TopDef" id="N_View">
                         <label for="N">
                             N
                             <input type="number" class="N" id="N">
                         </label>
                     </div>
-                    <div class="row margin_TopDef">
+                    <div class="row margin_TopDef" id="J_View">
                         <label for="J">
                             J
                             <input type="number" class="J" id="J">
@@ -146,6 +112,11 @@
             </div>
             <div class="col resultados">
                 <h3> RESULTADOS</h3>
+                <div class="container">
+                    <div class="row margin_TopDef reulstado_calculo" id="resultado_calculo">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
