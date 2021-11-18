@@ -11,48 +11,53 @@
 {% block application %}
     <div class="container appSpace">
         <div class="row">
-            <div class="col-2 configurador">
+            <div class="col-2 configurador scrollY">
                 <h3>CONFIGURADOR</h3>
                 <div class="container">
-                    <div class="row margin_TopDef centerTextAling"><h4>¿Que desea encontrar?</h4></div>
+
+                    <!--Seleccionar el  -->
+                    <div class="row margin_TopDef centerTextAling"><h4>Temporalidad</h4></div>
                     <div class="row margin_TopDef centerTextAling">
-                        <label for="seleccionarEvento">
-                            <select class="sea" id="seleccionarEvento">
+                        <label for="seleccionarTempo">
+                            <select class="sef" id="seleccionarTempo">
                                 <option value="none">----</option>
-                                <option value="VP">Valor presente</option>
-                                <option value="VF">Valor futuro</option>
-                                <option value="VP_A">Anualidad valor presente</option>
-                                <option value="VF_A">Anualidad valor futuro</option>
+                                <option value="presente">Presente</option>
+                                <option value="futuro">Futuro</option>
                             </select>
                         </label>
                     </div>
-                    <div class="row margin_TopDef centerTextAling"><h4>TIPO DE TABLA:</h4></div>
-                    <div class="row margin_TopDef centerTextAling ">
-                        <label for="seleccionarTabla">
-                            <select id="seleccionarTabla" class="seb">
-                                <option value="none">----</option>
-                                <option value="amort">Amortizacion</option>
-                                <option value="capts">Capitalizacion</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="row margin_TopDef centerTextAling"><h4>TIPO DE SERIE:</h4></div>
-                    <div class="row margin_TopDef centerTextAling">
-                        <label for="seleccionarSerie">
-                            <select id="seleccionarSerie" class="sec">
-                                <option value="none">----</option>
-                                <option value="uniform">Uniforme</option>
-                                <option value="varia">Variable</option>
-                            </select>
-                        </label>
-                    </div>
+
                     <div class="row margin_TopDef centerTextAling"><h4>MODALIDAD DE PAGO:</h4></div>
                     <div class="row margin_TopDef centerTextAling ">
                         <label for="seleccionarPago">
                             <select id="seleccionarPago" class="sed">
                                 <option value="none">----</option>
-                                <option value="anti">Anticipada</option>
-                                <option value="venc">Vencida</option>
+                                <option value="anticipada">Anticipada</option>
+                                <option value="vencida">Vencida</option>
+                                <option value="decreciente">Decreciente</option>
+                                <option value="creciente">Creciente</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="row margin_TopDef centerTextAling"><h4>¿Que desea hacer?:</h4></div>
+                    <div class="row margin_TopDef centerTextAling ">
+                        <label for="seleccionarTabla">
+                            <select id="seleccionarTabla" class="seb">
+                                <option value="none">----</option>
+                                <option value="amortizacion">Amortizacion</option>
+                                <option value="capitalizacion">Capitalizacion</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="row margin_TopDef centerTextAling"><h4>TIPO DE SERIE:</h4></div>
+                    <div class="row margin_TopDef centerTextAling">
+                        <label for="seleccionarSerie">
+                            <select id="seleccionarSerie" class="sec">
+                                <option value="none">----</option>
+                                <option value="uniforme">Uniforme</option>
+                                <option value="variable">Variable</option>
                             </select>
                         </label>
                     </div>
@@ -62,16 +67,10 @@
             <div class="col-2 variables">
                 <h3>VARIABLES</h3>
                 <div class="container abc">
-                    <div class="row margin_TopDef" id="VP_View">
-                        <label for="VP" >
-                            VP
-                            <input type="number" class="VP" id="VP">
-                        </label>
-                    </div>
-                    <div class="row margin_TopDef" id="VF_View">
-                        <label for="VF">
-                            VF
-                            <input type="number" class="VF" id="VF">
+                    <div class="row margin_TopDef" id="V_View">
+                        <label for="V" >
+                            Valor
+                            <input type="number" class="V" id="V">
                         </label>
                     </div>
                     <div class="row margin_TopDef" id="Interes_View">

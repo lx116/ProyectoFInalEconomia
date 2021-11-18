@@ -129,6 +129,14 @@ footer
     height: 15vh;
     width: 100vw;
 }
+.scrollY
+{
+    overflow: hidden;
+}
+.scrollY:hover
+{
+    overflow-y: scroll;
+}
 ::-webkit-scrollbar
 {
     width: 0;

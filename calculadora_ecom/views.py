@@ -9,222 +9,367 @@ def renderHome(request):
     return render(request, 'appOne.html')
 
 
-# formulas
-
-# Valor presente de una Anualidad Vencida y Pagos
+# Anulidades uniformes
 @csrf_exempt
-def anualidadVencida__VP(request):
+def anualiadades_Uniformes(request):
     res = request.POST['data']
     data = json.loads(res)
     print(data)
 
-    A = float(data.get('A'))
-    n = float(data.get('n'))
+    es_anticipada = data.get('pago')
+
+    es_presente = data.get('tiempo')
+
+    A = 0
+    V = 0
+    n = 0
+
+    conversor = data.get('conversor_tiempo')
+
     interes = float(data.get('interes')) / 100
 
-    vp = A * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
+    mensaje = ''
+    mensaje_interes = ''
+    if data.get('A') == '':
+        A = 0
+    else:
+        A = float(data.get('A'))
 
-    vp = "{:.2f}".format(vp)
+    if data.get('n') == '':
+        n = 0
+    else:
+        n = float(data.get('n'))
 
-    return JsonResponse({'resultados': vp})
+    if data.get('V') == '':
+        V = 0
+    else:
+        V = float(data.get('V'))
 
-@csrf_exempt
-def anualidadVencida__VP_A(request):
-    req = request.POST['data']
-    data = json.loads(req)
+    if conversor != '':
+        n = conversor_tiempo_a_meses(n, conversor)
 
-    VP = float(data.get('VP'))
-    n = float(data.get('n'))
-    interes = float(data.get('interes'))/100
+    if interes <= 0:
+        mensaje_interes = 'El valor utilizado para los resolver el problema, sera el minimo vigente en Colombia.' \
+                          'Este corresponde al'
 
-    A = VP * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
+    if A == 0:
 
-    A = "{:.2f}".format(A)
+        if es_presente == 'presente':
+            if es_anticipada == 'anticipada':
+                A = anualidadAnticipada__VP_A(V, n, interes)
 
-    return JsonResponse({'resultados': A})
+            else:
+                A = anualidadVencida__VP_A(V, n, interes)
 
-@csrf_exempt
-def anualidadVencida__VP_N(request):
-    req = request.POST['data']
-    data = json.loads(req)
+        else:
+            if es_anticipada == 'anticipada':
+                A = anualidadAnticipada__A_VF(V, n, interes)
 
-    vp = float(data.get('VP'))
-    A = float(data.get('A'))
-    interes = float(data.get('interes'))/100
+            else:
+                A = anualidadVencida__VF_A(V, n, interes)
 
-    n = (math.log(A) - math.log(A - (interes * vp))) / (math.log(1 + interes))
-    n="{:.2f}".format(n)
-    return JsonResponse({'resultados': n})
+    elif n == 0:
+        if es_presente == 'presente':
+            if es_anticipada == 'anticipada':
+                n = anualidadAnticipada__N(V, A, interes)
 
+            else:
+                n = anualidadVencida__VP_N(V, A, interes)
 
-# Valor Final de una Anualidad Vencida y Pagos
-@csrf_exempt
-def anualidadVencida__VF(request):
-    req = request.POST['data']
-    data = json.loads(req)
+        else:
+            if es_anticipada == 'anticipada':
+                mensaje = 'La anualidad anticipada requiere estar en presente para funcionar correctamente cuando se ' \
+                          'desconoce el tiempo. '
 
-    A = float(data.get('A'))
-    interes = float(data.get('interes'))/100
-    n = float(data.get('n'))
+            else:
+                n = anualidadVencdida__VF_N(V, A, interes)
 
-    VF = A * ((((1 + interes) ** n) - 1) / (interes))
-    VF = "{:.2f}".format(VF)
-    return JsonResponse({'resultados': VF})
-
-
-def anualidadVencida__VF_A(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    VF = float(data.get('VF'))
-    interes = float(data.get('interes'))/100
-    n = float(data.get('n'))
-
-    A = VF * (interes / (((1 + interes) ** n) - 1))
-
-    return JsonResponse({'resultados': A})
+    elif V == 0:
+        if es_presente == 'presente':
+            if es_anticipada == 'anticipada':
+                V = anualidadAnticipada__VP(A, n, interes)
 
 
-def anualidadVencdida__VF_N(request):
-    req = request.POST['data']
-    data = json.loads(req)
+            else:
+                V = anualidadVencida__VP(A, n, interes)
 
-    VF = data.get('VF')
-    interes = data.get('interes')
-    A = data.get('A')
+        else:
+            if es_anticipada == 'anticipada':
+                V = anualidadAnticipada__VF(A, n, interes)
 
-    n = (math.log(VF * interes + A) - math.log(A)) / (math.log(1 + interes))
+            else:
+                V = anualidadVencida__VF(A, n, interes)
 
-    return JsonResponse({'resultados': n})
+    tipo_tabla = data.get('tabla')
 
-@csrf_exempt
-# Anualidad anticipada
-def anualidadAnticipada__VP(request):
-    req = request.POST['data']
-    data = json.loads(req)
+    n = float(n)
+    n = round(n)
 
-    A = float(data.get('A'))
-    n = float(data.get('n'))
-    interes = float(data.get('interes'))
+    if tipo_tabla == 'amortizacion':
+        tabla = tabla_amortizacion(V, A, interes, n)
+    else:
+        tabla = tabla_capitalizacion(V, A, interes, n)
 
+    print(tabla)
+
+    return JsonResponse(
+        {'anualidad': A, 'tiempo': n, 'valor': V, 'alerta_de_error': mensaje, 'alerta_de_inters': mensaje_interes,
+         'tabla': tabla})
+
+
+# Anualidades Variables
+def anualidades_Variables(request):
+    res = request.POST['data']
+    data = json.loads(res)
+    print(data)
+
+    es_anticipada = data.get('pago')
+
+    es_presente = data.get('tiempo')
+
+    A = 0
+    V = 0
+    n = 0
+    G = data.get('G')
+    conversor = data.get('conversor_tiempo')
+
+    interes = float(data.get('interes')) / 100
+
+    mensaje = ''
+    mensaje_interes = ''
+    if data.get('A') == '':
+        A = 0
+    else:
+        A = float(data.get('A'))
+
+    if data.get('n') == '':
+        n = 0
+    else:
+        n = float(data.get('n'))
+        n = round(n)
+
+    if data.get('V') == '':
+        V = 0
+    else:
+        V = float(data.get('V'))
+
+    n = conversor_tiempo_a_meses(n, conversor)
+
+    if interes <= 0:
+        mensaje_interes = 'El valor utilizado para los resolver el problema, sera el minimo vigente en Colombia.' \
+                          'Este corresponde al 2%'
+
+    if A == 0:
+
+        if es_presente == 'presente':
+            if es_anticipada == 'creciente':
+                A = gradienteLinealCreciente__A(V, n, interes, G)
+
+            else:
+                A = gradietneLinealDecreciente__A(V, n, interes, G)
+
+        else:
+            if es_anticipada == 'creciente':
+                A = anualidadAnticipada__A_VF(V, n, interes)
+
+            else:
+                A = anualidadVencida__VF_A(V, n, interes)
+    elif V == 0:
+        if es_presente == 'presente':
+            if es_anticipada == 'creciente':
+                V = gradienteLinealCreciente__VP(V, n, interes, G)
+            else:
+                V = gradietneLinealDecreciente__VP(V, n, interes, G)
+        else:
+            if es_anticipada == 'creciente':
+                V = gradienteLinealCreciente__VF(V, n, interes, G)
+            else:
+                V = gradietneLinealDecreciente__VF(V, n, interes, G)
+
+
+# Tabla de amortizacion
+def tabla_amortizacion(V, A, interes, n):
+    V = float(V)
+    tabla = []
+    array = []
+    n = int(n)
+
+    for i in range(n):
+        for j in range(1):
+            array = []
+
+            interes_amortizacion = A * interes
+            abono = A - interes_amortizacion
+            V = V - abono
+
+            array.append(V)
+            array.append(A)
+            array.append(interes_amortizacion)
+            array.append(abono)
+            print(array)
+
+        tabla.append(array)
+    print(tabla)
+
+    return tabla
+
+
+# Tabla de capitalizacion
+def tabla_capitalizacion(V, A, interes, n):
+    V = float(V)
+
+    tabla = []
+    saldo = A
+    n = int(n)
+
+    array = []
+
+    for i in range(n):
+        for j in range(1):
+            array = []
+            interes_capitalizable = 0
+            abono = 0
+
+            interes_capitalizable = saldo * interes
+            abono = A + interes_capitalizable
+            saldo = saldo + abono
+
+            array.append(V)
+            array.append(interes_capitalizable)
+            array.append(abono)
+            array.append(saldo)
+        tabla.append(array)
+
+    return tabla
+
+
+# formulas
+
+# Anualidades vencidas para encontrar A
+
+def anualidadVencida__VP_A(V, n, interes):
+    A = V * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
+
+    return A
+
+
+def anualidadVencida__VF_A(V, n, interes):
+    A = V * (interes / (((1 + interes) ** n) - 1))
+
+    return A
+
+
+# Anulidades anticipadas para encontrar A
+def anualidadAnticipada__VP_A(V, n, interes):
+    A = V * ((interes * (1 + interes) ** n) / (((1 + interes) ** n) - 1)) / (1 + interes)
+
+    return A
+
+
+def anualidadAnticipada__A_VF(V, n, interes):
+    A = V / (math.pow((1 + interes), (n + 1)) - ((1 + interes) ** n)) / interes
+
+    return A
+
+
+# Conversor de tiempo
+def conversor_tiempo_a_meses(n, conversor):
+    if conversor == 'anual':
+        n = n * 12
+    elif conversor == 'semestre':
+        n = n * 6
+    elif conversor == 'trimestre':
+        n = n * 3
+    elif conversor == 'bimenseual':
+        n = n * 2
+    else:
+        n = n
+
+    return n
+
+
+# Anuliadad vencida para encontrar N
+def anualidadVencida__VP_N(V, A, interes):
+    n = (math.log(A) - math.log(A - (interes * V))) / math.log(1 + interes)
+
+    return n
+
+
+def anualidadVencdida__VF_N(V, A, interes):
+    n = (math.log((V * interes) + A) - math.log(A)) / math.log(1 + interes)
+
+    return n
+
+
+# Anualidad anticipada para encontrar N
+def anualidadAnticipada__N(V, A, interes):
+    n = ((math.log(A) - math.log(A - interes * (V - A))) / (math.log(1 + interes))) + 1
+
+    return n
+
+
+# Anualidad anticipada para encontrar el valor
+def anualidadAnticipada__VP(A, n, interes):
     VP = (A * (1 + interes) * (math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes), n)))
 
     vp = "{:.2f}".format(VP)
 
-    return JsonResponse({'resultados': vp})
+    return VP
 
 
-def anualidadAnticipada__A(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    VP = float(data.get('VP'))
-    n = float(data.get('n'))
-    interes = float(data.get('interes'))/100
-
-    A = VP * ((interes * (1 + interes) ** n) / (((1 + interes) ** n) - 1)) / (1 + interes)
-
-    return JsonResponse({'resultados': A})
-
-
-def anualidadAnticipada__N(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    VP = data.get('VP')
-    A = data.get('A')
-    interes = data.get('interes')
-
-    n = ((math.log(A) - math.log(A - interes * (VP - A))) / (math.log(1 + interes))) + 1
-
-    return JsonResponse({'resultados': n})
-
-@csrf_exempt
-def anualidadAnticipada__VF(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    A = float(data.get('A'))
-    n = float(data.get('n'))
-    interes = float(data.get('interes'))/100
-
+def anualidadAnticipada__VF(A, n, interes):
     VF = A * (((1 + interes) ** (n + 1)) - (1 + interes) / (interes))
 
-    VF= "{:.2f}".format(VF)
+    VF = "{:.2f}".format(VF)
 
-    return JsonResponse({'resultados': VF})
-
-
-def anualidadAnticipada__A_VF(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    n = float(data.get('n'))
-    interes = float(data.get('interes'))
-    VF = float(data.get('VF'))
-
-    A = VF / (math.pow((1 + interes), (n + 1)) - ((1 + interes) ** n)) / interes
-
-    return JsonResponse({'reulstados': A})
+    return VF
 
 
-# Gradiente lienal clasico Creciente
+# Anualidad vencida para encontrar el valor
+def anualidadVencida__VP(A, n, interes):
+    vp = A * ((((1 + interes) ** n) - 1) / (interes * ((1 + interes) ** n)))
 
-def gradienteLinealCreciente__VP(request):
-    req = request.POST['data']
-    data = json.loads(req)
+    vp = "{:.2f}".format(vp)
 
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
+    return vp
+
+
+def anualidadVencida__VF(A, n, interes):
+    VF = A * ((((1 + interes) ** n) - 1) / (interes))
+    VF = "{:.2f}".format(VF)
+    return VF
+
+
+# Gradientes crecientes_A
+def gradienteLinealCreciente__A(V, n, interes, G):
+    A = V - (G / interes) * (((math.pow((1 + interes), n) - 1) / interes) - n) / (
+            (math.pow((1 + interes), n) - 1) / interes)
+
+    return A
+
+
+# Gradiente decreciente_A
+
+
+def gradienteLinealCreciente__VP(A, n, interes, G):
 
     VP = A * ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes), n))) + (G / interes)(
         ((math.pow((1 + interes), n) - 1) / (interes(1 + interes) * n)) - (n / (1 + interes) * n))
 
-    return JsonResponse({'resultados': VP})
+    return VP
 
 
-def gradienteLinealCreciente__VF(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
+def gradienteLinealCreciente__VF(A, n, interes, G):
 
     VF = A * ((math.pow((1 + interes), n) - 1) / interes) + (G / interes) * (
             ((math.pow((1 + interes), n) - 1) / interes) - n)
 
-    return JsonResponse({'resultados': VF})
-
-
-def gradienteLinealCreciente__A(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
-    VF = data.get('VF')
-
-    A = VF - (G / interes) * (((math.pow((1 + interes), n) - 1) / interes) - n) / (
-            (math.pow((1 + interes), n) - 1) / interes)
-
-    return JsonResponse({'resultados': A})
+    return VF
 
 
 # Gradiente lineas decreciente
 
-def gradietneLinealDecreciente__VP(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
+def gradietneLinealDecreciente__VP(A, n, interes, G):
 
     VP = A * ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes) ^ n))) - (G / interes) * (
             ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes), n))) - (
@@ -233,14 +378,7 @@ def gradietneLinealDecreciente__VP(request):
     return JsonResponse({'resultados': VP})
 
 
-def gradietneLinealDecreciente__VF(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
+def gradietneLinealDecreciente__VF(A, n, interes, G):
 
     VF = A * ((math.pow((1 + interes), n) - 1) / interes) - (G / interes) * (
             ((math.pow((1 + interes), n) - 1) / interes) - n)
@@ -248,16 +386,8 @@ def gradietneLinealDecreciente__VF(request):
     return JsonResponse({'resultados': VF})
 
 
-def gradietneLinealDecreciente__A(request):
-    req = request.POST['data']
-    data = json.loads(req)
-
-    n = data.get('n')
-    interes = data.get('interes')
-    G = data.get('G')
-    VF = data.get('VF')
-
-    A = VF + (G / interes) * (((math.pow((1 + interes), n) - 1) / interes) - n) / (
+def gradietneLinealDecreciente__A(V, n, interes, G):
+    A = V + (G / interes) * (((math.pow((1 + interes), n) - 1) / interes) - n) / (
             (math.pow((1 + interes), n) - 1) / interes)
 
     return JsonResponse({'resultados': A})
@@ -265,40 +395,28 @@ def gradietneLinealDecreciente__A(request):
 
 # Gradiente geometrico creciente
 
-def gradietneGeometricoCreciente(request):
-    VP = 0
-    req = request.POST['data']
-    data = json.loads(req)
+def gradietneGeometricoCreciente(A, n, interes, J):
 
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    J = data.get('J')
+    VP = 0
 
     if interes != J:
         VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J), n))) / ((interes - J) * math.pow((1 + interes), n)))
     elif interes == J:
         VP = ((n * A) / (1 + interes))
 
-    return JsonResponse({'resultados': VP})
+    return VP
 
 
 # Gradiente geoemtrico decreciente
 
-def gradienteGeometricoDecrecietne(request):
-    VP = 0
-    req = request.POST['data']
-    data = json.loads(req)
+def gradienteGeometricoDecrecietne(A, n, interes, J):
 
-    A = data.get('A')
-    n = data.get('n')
-    interes = data.get('interes')
-    J = data.get('J')
+    VP = 0
 
     if interes != J:
         VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J) ** n))) / (
-                    (interes + J) * math.pow((1 + interes), n)))
+                (interes + J) * math.pow((1 + interes), n)))
     elif interes == J:
         VP = (A / (1 + interes))
 
-    return JsonResponse({'request': VP})
+    return VP
