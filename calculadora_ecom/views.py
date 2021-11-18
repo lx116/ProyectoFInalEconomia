@@ -387,9 +387,8 @@ def gradienteLinealCreciente__VF(A, n, interes, G):
 def gradietneLinealDecreciente__VP(A, n, interes, G):
     G = float(G)
 
-    VP = A * ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes) ^ n))) - (G / interes) * (
-            ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes), n))) - (
-            n / math.pow((1 + interes), n)))
+    VP = A * ((((1+interes)**n)-1) / (interes * (1 + interes) ** n))-(G/interes)*(((((1+interes)**n)-1) / (interes * (1 + interes) ** n)) - (n / (
+                (1 + interes) ** n)))
 
     return JsonResponse({'resultados': VP})
 
@@ -408,31 +407,3 @@ def gradietneLinealDecreciente__A(V, n, interes, G):
 
     return A
 
-
-# Gradiente geometrico creciente
-
-def gradietneGeometricoCreciente(A, n, interes, J):
-
-    VP = 0
-
-    if interes != J:
-        VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J), n))) / ((interes - J) * math.pow((1 + interes), n)))
-    elif interes == J:
-        VP = ((n * A) / (1 + interes))
-
-    return VP
-
-
-# Gradiente geoemtrico decreciente
-
-def gradienteGeometricoDecrecietne(A, n, interes, J):
-
-    VP = 0
-
-    if interes != J:
-        VP = A * ((math.pow((1 + interes), n) - (math.pow((1 + J) ** n))) / (
-                (interes + J) * math.pow((1 + interes), n)))
-    elif interes == J:
-        VP = (A / (1 + interes))
-
-    return VP
