@@ -20,13 +20,16 @@ def anualiadades_Uniformes(request):
 
     es_presente = data.get('tiempo')
 
+    if data.get('interes') == '':
+        interes = 0
+    else:
+        interes = float(data.get('interes')) / 100
+
     A = 0
     V = 0
     n = 0
 
     conversor = data.get('conversor_tiempo')
-
-    interes = float(data.get('interes')) / 100
 
     mensaje = ''
     mensaje_interes = ''
@@ -51,6 +54,7 @@ def anualiadades_Uniformes(request):
     if interes <= 0:
         mensaje_interes = 'El valor utilizado para los resolver el problema, sera el minimo vigente en Colombia.' \
                           'Este corresponde al'
+        interes = 2 / 100
 
     if A == 0:
 
@@ -112,9 +116,11 @@ def anualiadades_Uniformes(request):
 
     print(tabla)
 
+    A = round(A)
+    V = round(V)
     return JsonResponse(
         {'anualidad': A, 'tiempo': n, 'valor': V, 'alerta_de_error': mensaje, 'alerta_de_inters': mensaje_interes,
-         'tabla': tabla})
+         'tabla': tabla, 'interes': interes})
 
 
 # Anualidades Variables
@@ -160,7 +166,7 @@ def anualidades_Variables(request):
     if interes <= 0:
         mensaje_interes = 'El valor utilizado para los resolver el problema, sera el minimo vigente en Colombia.' \
                           'Este corresponde al 2%'
-        interes = 2/100
+        interes = 2 / 100
 
     if A == 0:
 
@@ -173,8 +179,8 @@ def anualidades_Variables(request):
                 A = gradietneLinealDecreciente__A(V, n, interes, G)
 
         else:
-            mensaje= 'para poder encontrar la anualidad con gradiente lineal, usted necesita seleccionar el timepo ' \
-                     'como futuro. '
+            mensaje = 'para poder encontrar la anualidad con gradiente lineal, usted necesita seleccionar el timepo ' \
+                      'como futuro. '
     elif V == 0:
         if es_presente == 'presente':
             if es_anticipada == 'creciente':
@@ -197,9 +203,13 @@ def anualidades_Variables(request):
     else:
         tabla = tabla_capitalizacion(V, A, interes, n)
 
+    A = round(A)
+    V = round(V)
     return JsonResponse(
-        {'anualidad': A, 'tiempo': n, 'valor': V, 'alerta_de_error': mensaje,'J':J,'G':G, 'alerta_de_inters': mensaje_interes,
-         'tabla': tabla})
+        {'anualidad': A, 'tiempo': n, 'valor': V, 'alerta_de_error': mensaje, 'J': J, 'G': G,
+         'alerta_de_inters': mensaje_interes,
+         'tabla': tabla, 'interes': interes})
+
 
 # Tabla de amortizacion
 def tabla_amortizacion(V, A, interes, n):
@@ -207,19 +217,22 @@ def tabla_amortizacion(V, A, interes, n):
     tabla = []
     array = []
     n = int(n)
-
+    pago_capital = V
+    monto = A
+    cuota = V * ((1 + interes) ** n) / (((1 + interes) ** n) - 1)
+    print(cuota)
     for i in range(n):
         for j in range(1):
             array = []
 
+            interes_amortizacion = V * interes
+            pago_capital = cuota - pago_capital
+            monto = monto - pago_capital
 
-            interes_amortizacion = A * interes
-            abono = A - interes_amortizacion
-            V = V - abono
-            array.append(round(A))
+            array.append(round(cuota))
             array.append(round(interes_amortizacion))
-            array.append(round(abono))
-            array.append(round(V))
+            array.append(round(pago_capital))
+            array.append(round(monto))
 
         tabla.append(array)
 
@@ -229,10 +242,11 @@ def tabla_amortizacion(V, A, interes, n):
 # Tabla de capitalizacion
 def tabla_capitalizacion(V, A, interes, n):
     V = float(V)
-
+    print(interes)
+    print(V)
     tabla = []
     saldo = A
-    n = int(n)
+    n = float(n)
 
     array = []
 
@@ -242,8 +256,8 @@ def tabla_capitalizacion(V, A, interes, n):
             interes_capitalizable = 0
             abono = 0
 
-            interes_capitalizable = saldo * interes
-            abono = A + interes_capitalizable
+            interes_capitalizable = V * interes
+            abono = V + interes_capitalizable
             saldo = saldo + abono
 
             array.append(round(V))
@@ -357,7 +371,7 @@ def anualidadVencida__VF(A, n, interes):
 def gradienteLinealCreciente__A(V, n, interes, G):
     G = float(G)
 
-    A = V - (G/interes)*(((((1+interes)**n)-1)/interes)-n)/(((1+interes)**n)-1)/interes
+    A = V - (G / interes) * (((((1 + interes) ** n) - 1) / interes) - n) / (((1 + interes) ** n) - 1) / interes
 
     return A
 
@@ -368,8 +382,9 @@ def gradienteLinealCreciente__A(V, n, interes, G):
 def gradienteLinealCreciente__VP(A, n, interes, G):
     G = float(G)
 
-    VP = A * ((((1+interes)**n)-1) / (interes * (1 + interes) ** n))+(G/interes)*(((((1+interes)**n)-1) / (interes * (1 + interes) ** n)) - (n / (
-                (1 + interes) ** n)))
+    VP = A * ((((1 + interes) ** n) - 1) / (interes * (1 + interes) ** n)) + (G / interes) * (
+            ((((1 + interes) ** n) - 1) / (interes * (1 + interes) ** n)) - (n / (
+            (1 + interes) ** n)))
 
     return VP
 
@@ -377,7 +392,7 @@ def gradienteLinealCreciente__VP(A, n, interes, G):
 def gradienteLinealCreciente__VF(A, n, interes, G):
     G = float(G)
 
-    VF = A*((((1+interes)**n)-1)/interes)+(G/interes)*(((1 + interes) ** n) - n)
+    VF = A * ((((1 + interes) ** n) - 1) / interes) + (G / interes) * (((1 + interes) ** n) - n)
 
     return VF
 
@@ -387,8 +402,9 @@ def gradienteLinealCreciente__VF(A, n, interes, G):
 def gradietneLinealDecreciente__VP(A, n, interes, G):
     G = float(G)
 
-    VP = A * ((((1+interes)**n)-1) / (interes * (1 + interes) ** n))-(G/interes)*(((((1+interes)**n)-1) / (interes * (1 + interes) ** n)) - (n / (
-                (1 + interes) ** n)))
+    VP = A * ((((1 + interes) ** n) - 1) / (interes * (1 + interes) ** n)) - (G / interes) * (
+            ((((1 + interes) ** n) - 1) / (interes * (1 + interes) ** n)) - (n / (
+            (1 + interes) ** n)))
 
     return JsonResponse({'resultados': VP})
 
@@ -396,14 +412,13 @@ def gradietneLinealDecreciente__VP(A, n, interes, G):
 def gradietneLinealDecreciente__VF(A, n, interes, G):
     G = float(G)
 
-    VF = A * ((((1+interes)**n)-1)/interes)-(G/interes)*(((((1 + interes) ** n)-1)/interes) - n)
+    VF = A * ((((1 + interes) ** n) - 1) / interes) - (G / interes) * (((((1 + interes) ** n) - 1) / interes) - n)
 
     return JsonResponse({'resultados': VF})
 
 
 def gradietneLinealDecreciente__A(V, n, interes, G):
     G = float(G)
-    A = V + (G / interes) *(((((1+interes)**n)-1)/interes)-n)/((((1+interes)**n)-1)/interes)
+    A = V + (G / interes) * (((((1 + interes) ** n) - 1) / interes) - n) / ((((1 + interes) ** n) - 1) / interes)
 
     return A
-

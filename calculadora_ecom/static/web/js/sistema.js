@@ -92,7 +92,14 @@ $(document).ready(function (){
                 }else {$('#indicador_tabla').text('Tabla de capitalizacion')
                 $('#indicador_cuota').text('Deposito')
                 }
-
+                var precontenedor = $("<tr>\n" +
+                        "  <td>"+0+"</td>\n" +
+                        "  <td>"+0+"</td>\n" +
+                        "  <td>"+0+"</td>\n" +
+                        "  <td>"+0+"</td>\n" +
+                        "<td>"+data.valor+"</td>" +
+                        "  </tr>")
+                $("#cargar_tabla").append(precontenedor)
                 for (var i = 0;i<=data.tabla.length;i++)
                 {       var contador = i +1
                         var contenedor = $("<tr>\n" +
@@ -105,6 +112,21 @@ $(document).ready(function (){
                         $("#cargar_tabla").append(contenedor)
                 }
 
+                $('#resultados_individuales').html("<div class=\"col-6\">\n" +
+                    "<h4>Valor "+seleccionarTempo +":</h4>\n" +
+                    "<h4>Anualidad "+seleccionarPago+": </h4>" +
+                    "<h4>Tiempo en meses:</h4>" +
+                    "<h4>Tasa de interes</h4>" +
+                    "</div>\n" +
+                    "<div class=\"col-6\">\n" +
+                    "<h4></h4>\n" +
+                    "</div>" +
+                    "<div class='col-6'>" +
+                    "<h4>"+data.valor+"</h4>" +
+                    "<h4>"+data.anualidad+"</h4>" +
+                    "<h4>"+data.tiempo+"</h4>" +
+                    "<h4>"+data.interes+"</h4>" +
+                    "</div>")
         })}
         else if (seleccionarSerie==='variable')
             {
