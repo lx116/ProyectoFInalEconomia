@@ -97,7 +97,27 @@ $(document).ready(function (){
         else if (seleccionarSerie==='variable')
             {
                 $.post("/home/anualidades_Variables/",{data:convertJson},function (data) {
+                    $('#cargar_tabla').empty()
+                console.log(data.tabla)
+                if (seleccionarTabla==='amortizacion')
+                {
+                    $('#indicador_tabla').text('Tabla de amortizacion')
+                    $('#indicador_cuota').text('Cuota')
+                }else {$('#indicador_tabla').text('Tabla de capitalizacion')
+                $('#indicador_cuota').text('Deposito')
+                }
 
+                for (var i = 0;i<=data.tabla.length;i++)
+                {       var contador = i +1
+                        var contenedor = $("<tr>\n" +
+                        "  <td>"+contador+"</td>\n" +
+                        "  <td>"+data.tabla[i][0]+"</td>\n" +
+                        "  <td>"+data.tabla[i][1]+"</td>\n" +
+                        "  <td>"+data.tabla[i][2]+"</td>\n" +
+                            "<td>"+data.tabla[i][3]+"</td>" +
+                        "  </tr>")
+                        $("#cargar_tabla").append(contenedor)
+                }
                 })
             }
         else
