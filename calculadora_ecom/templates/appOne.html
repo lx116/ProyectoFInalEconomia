@@ -15,7 +15,39 @@
                 <h3>CONFIGURADOR</h3>
                 <div class="container">
 
-                    <!--Seleccionar el  -->
+                    <div class="row margin_TopDef centerTextAling"><h4>TIPO DE SERIE:</h4></div>
+                    <div class="row margin_TopDef centerTextAling">
+                        <label for="seleccionarSerie">
+                            <select id="seleccionarSerie" class="sec">
+                                <option value="none">----</option>
+                                <option value="uniforme">Uniforme</option>
+                                <option value="variable">Variable</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="row margin_TopDef centerTextAling"><h4>MODALIDAD DE PAGO:</h4></div>
+                    <div class="row margin_TopDef centerTextAling" style="display: none" id="gradientes">
+                        <label for="seleccionarPago">
+                            <select id="seleccionarPago" class="sed">
+                                <option value="none">----</option>
+                                <option value="decreciente">Decreciente</option>
+                                <option value="creciente">Creciente</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="row margin_TopDef centerTextAling" id="anualidades" style="display: none">
+                        <label for="seleccionarPago">
+                            <select id="seleccionarPago" class="sed">
+                                <option value="none">----</option>
+                                <option value="anticipada">Anticipada</option>
+                                <option value="vencida">Vencida</option>
+
+                            </select>
+                        </label>
+                    </div>
+
                     <div class="row margin_TopDef centerTextAling"><h4>Temporalidad</h4></div>
                     <div class="row margin_TopDef centerTextAling">
                         <label for="seleccionarTempo">
@@ -27,18 +59,6 @@
                         </label>
                     </div>
 
-                    <div class="row margin_TopDef centerTextAling"><h4>MODALIDAD DE PAGO:</h4></div>
-                    <div class="row margin_TopDef centerTextAling ">
-                        <label for="seleccionarPago">
-                            <select id="seleccionarPago" class="sed">
-                                <option value="none">----</option>
-                                <option value="anticipada">Anticipada</option>
-                                <option value="vencida">Vencida</option>
-                                <option value="decreciente">Decreciente</option>
-                                <option value="creciente">Creciente</option>
-                            </select>
-                        </label>
-                    </div>
 
                     <div class="row margin_TopDef centerTextAling"><h4>¿Que desea hacer?:</h4></div>
                     <div class="row margin_TopDef centerTextAling ">
@@ -51,16 +71,7 @@
                         </label>
                     </div>
 
-                    <div class="row margin_TopDef centerTextAling"><h4>TIPO DE SERIE:</h4></div>
-                    <div class="row margin_TopDef centerTextAling">
-                        <label for="seleccionarSerie">
-                            <select id="seleccionarSerie" class="sec">
-                                <option value="none">----</option>
-                                <option value="uniforme">Uniforme</option>
-                                <option value="variable">Variable</option>
-                            </select>
-                        </label>
-                    </div>
+
                 </div>
 
             </div>
@@ -79,28 +90,22 @@
                             <input type="number" class="interes" id="interes">
                         </label>
                     </div>
-                    <div class="row margin_TopDef" id="G_View">
+                    <div class="row margin_TopDef" id="G_View" style="display: none">
                         <label for="G">
-                            G
+                            Gradiente
                             <input type="number" class="G" id="G">
                         </label>
                     </div>
                     <div class="row margin_TopDef" id="A_View">
                         <label for="A">
-                            A
+                            Anualidad
                             <input type="number" class="A" id="A">
                         </label>
                     </div>
                     <div class="row margin_TopDef" id="N_View">
                         <label for="N">
-                            N
+                            Tiempo
                             <input type="number" class="N" id="N">
-                        </label>
-                    </div>
-                    <div class="row margin_TopDef" id="J_View">
-                        <label for="J">
-                            J
-                            <input type="number" class="J" id="J">
                         </label>
                     </div>
                     <div class="row  margin_TopDef">
@@ -112,22 +117,27 @@
             <div class="col resultados">
                 <h3> RESULTADOS</h3>
                 <div class="container">
-                    <div class="row margin_TopDef reulstado_calculo" id="resultado_calculo">
+                    <div class="row margin_TopDef reulstado_calculo scrollY" id="resultado_calculo">
                         <h4 class="centerTextAling" id="indicador_tabla"> Tabla de: </h4>
-                        <table>
-                            <thead>
-                                <tr class="datos_tabla">
-                                    <td>N° cuota</td>
-                                    <td class="indicador_cuota">Cuota</td>
-                                    <td>Interes</td>
-                                    <td>Abono</td>
-                                    <td>Saldo</td>
-                                </tr>
-                            </thead>
-                            <tbody class="tabla_resultante" id="cargar_tabla">
+                    </div>
+                    <div class="spaceTable scrollY row">
+                            <table>
+                                <thead>
+                                    <tr class="datos_tabla">
+                                        <td>N° cuota</td>
+                                        <td class="indicador_cuota">Cuota</td>
+                                        <td>Interes</td>
+                                        <td>Abono</td>
+                                        <td>Saldo</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="tabla_resultante" id="cargar_tabla">
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                    </div>
+                    <div class="row">
+
                     </div>
                 </div>
             </div>

@@ -38,7 +38,19 @@ $(document).ready(function (){
     $('#seleccionarSerie').change(function() {
         seleccionarSerie=$(this).val()
         //esta tiene que modificar los inputs de seleccionar formula
+        if (seleccionarSerie==='variable')
+        {
+            document.getElementById('gradientes').style.display = 'block'
+            document.getElementById('anualidades').style.display = 'none'
+            document.getElementById('G_View').style.display='block'
 
+        }
+        else
+            {
+                document.getElementById('gradientes').style.display = 'none'
+                document.getElementById('anualidades').style.display = 'block'
+                document.getElementById('G_View').style.display='none'
+            }
         })
 
     $('#seleccionarTabla').change(function () {

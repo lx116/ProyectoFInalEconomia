@@ -246,10 +246,10 @@ def tabla_capitalizacion(V, A, interes, n):
             abono = A + interes_capitalizable
             saldo = saldo + abono
 
-            array.append(V)
-            array.append(interes_capitalizable)
-            array.append(abono)
-            array.append(saldo)
+            array.append(round(V))
+            array.append(round(interes_capitalizable))
+            array.append(round(abono))
+            array.append(round(saldo))
 
         tabla.append(array)
 
