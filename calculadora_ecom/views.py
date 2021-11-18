@@ -118,6 +118,7 @@ def anualiadades_Uniformes(request):
 
 
 # Anualidades Variables
+@csrf_exempt
 def anualidades_Variables(request):
     res = request.POST['data']
     data = json.loads(res)
@@ -131,6 +132,7 @@ def anualidades_Variables(request):
     V = 0
     n = 0
     G = data.get('G')
+    J = data.get('J')
     conversor = data.get('conversor_tiempo')
 
     interes = float(data.get('interes')) / 100
@@ -158,22 +160,21 @@ def anualidades_Variables(request):
     if interes <= 0:
         mensaje_interes = 'El valor utilizado para los resolver el problema, sera el minimo vigente en Colombia.' \
                           'Este corresponde al 2%'
+        interes = 2/100
 
     if A == 0:
 
-        if es_presente == 'presente':
+        if es_presente == 'futuro':
             if es_anticipada == 'creciente':
                 A = gradienteLinealCreciente__A(V, n, interes, G)
+                print(A)
 
             else:
                 A = gradietneLinealDecreciente__A(V, n, interes, G)
 
         else:
-            if es_anticipada == 'creciente':
-                A = anualidadAnticipada__A_VF(V, n, interes)
-
-            else:
-                A = anualidadVencida__VF_A(V, n, interes)
+            mensaje= 'para poder encontrar la anualidad con gradiente lineal, usted necesita seleccionar el timepo ' \
+                     'como futuro. '
     elif V == 0:
         if es_presente == 'presente':
             if es_anticipada == 'creciente':
@@ -186,6 +187,19 @@ def anualidades_Variables(request):
             else:
                 V = gradietneLinealDecreciente__VF(V, n, interes, G)
 
+    tipo_tabla = data.get('tabla')
+
+    n = float(n)
+    n = round(n)
+
+    if tipo_tabla == 'amortizacion':
+        tabla = tabla_amortizacion(V, A, interes, n)
+    else:
+        tabla = tabla_capitalizacion(V, A, interes, n)
+
+    return JsonResponse(
+        {'anualidad': A, 'tiempo': n, 'valor': V, 'alerta_de_error': mensaje,'J':J,'G':G, 'alerta_de_inters': mensaje_interes,
+         'tabla': tabla})
 
 # Tabla de amortizacion
 def tabla_amortizacion(V, A, interes, n):
@@ -198,18 +212,16 @@ def tabla_amortizacion(V, A, interes, n):
         for j in range(1):
             array = []
 
+
             interes_amortizacion = A * interes
             abono = A - interes_amortizacion
             V = V - abono
-
-            array.append(V)
-            array.append(A)
-            array.append(interes_amortizacion)
-            array.append(abono)
-            print(array)
+            array.append(round(A))
+            array.append(round(interes_amortizacion))
+            array.append(round(abono))
+            array.append(round(V))
 
         tabla.append(array)
-    print(tabla)
 
     return tabla
 
@@ -238,6 +250,7 @@ def tabla_capitalizacion(V, A, interes, n):
             array.append(interes_capitalizable)
             array.append(abono)
             array.append(saldo)
+
         tabla.append(array)
 
     return tabla
@@ -342,8 +355,9 @@ def anualidadVencida__VF(A, n, interes):
 
 # Gradientes crecientes_A
 def gradienteLinealCreciente__A(V, n, interes, G):
-    A = V - (G / interes) * (((math.pow((1 + interes), n) - 1) / interes) - n) / (
-            (math.pow((1 + interes), n) - 1) / interes)
+    G = float(G)
+
+    A = V - (G/interes)*(((((1+interes)**n)-1)/interes)-n)/(((1+interes)**n)-1)/interes
 
     return A
 
@@ -352,17 +366,18 @@ def gradienteLinealCreciente__A(V, n, interes, G):
 
 
 def gradienteLinealCreciente__VP(A, n, interes, G):
+    G = float(G)
 
-    VP = A * ((math.pow((1 + interes), n) - 1) / (interes * math.pow((1 + interes), n))) + (G / interes)(
-        ((math.pow((1 + interes), n) - 1) / (interes(1 + interes) * n)) - (n / (1 + interes) * n))
+    VP = A * ((((1+interes)**n)-1) / (interes * (1 + interes) ** n))+(G/interes)*(((((1+interes)**n)-1) / (interes * (1 + interes) ** n)) - (n / (
+                (1 + interes) ** n)))
 
     return VP
 
 
 def gradienteLinealCreciente__VF(A, n, interes, G):
+    G = float(G)
 
-    VF = A * ((math.pow((1 + interes), n) - 1) / interes) + (G / interes) * (
-            ((math.pow((1 + interes), n) - 1) / interes) - n)
+    VF = A*((((1+interes)**n)-1)/interes)+(G/interes)*(((1 + interes) ** n) - n)
 
     return VF
 
