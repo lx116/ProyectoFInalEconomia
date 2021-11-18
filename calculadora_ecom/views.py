@@ -20,6 +20,8 @@ def anualiadades_Uniformes(request):
 
     es_presente = data.get('tiempo')
 
+
+
     if data.get('interes') == '':
         interes = 0
     else:
@@ -213,23 +215,26 @@ def anualidades_Variables(request):
 
 # Tabla de amortizacion
 def tabla_amortizacion(V, A, interes, n):
+
     V = float(V)
     tabla = []
     array = []
     n = int(n)
-    pago_capital = V
-    monto = A
-    cuota = V * ((1 + interes) ** n) / (((1 + interes) ** n) - 1)
+    pago_capital = 0
+    monto = V
+
+    cuota = V * (((1 + interes) ** n)*interes) / (((1 + interes) ** n) - 1)
     print(cuota)
     for i in range(n):
         for j in range(1):
             array = []
 
-            interes_amortizacion = V * interes
-            pago_capital = cuota - pago_capital
+            interes_amortizacion = monto * interes
+            pago_capital = cuota - interes_amortizacion
             monto = monto - pago_capital
 
             array.append(round(cuota))
+
             array.append(round(interes_amortizacion))
             array.append(round(pago_capital))
             array.append(round(monto))
@@ -238,7 +243,6 @@ def tabla_amortizacion(V, A, interes, n):
 
     return tabla
 
-
 # Tabla de capitalizacion
 def tabla_capitalizacion(V, A, interes, n):
     V = float(V)
@@ -246,7 +250,7 @@ def tabla_capitalizacion(V, A, interes, n):
     print(V)
     tabla = []
     saldo = A
-    n = float(n)
+    n = int(n)
 
     array = []
 
@@ -313,7 +317,6 @@ def conversor_tiempo_a_meses(n, conversor):
         n = n
 
     return n
-
 
 # Anuliadad vencida para encontrar N
 def anualidadVencida__VP_N(V, A, interes):

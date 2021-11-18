@@ -97,7 +97,7 @@ $(document).ready(function (){
                         "  <td>"+0+"</td>\n" +
                         "  <td>"+0+"</td>\n" +
                         "  <td>"+0+"</td>\n" +
-                        "<td>"+data.valor+"</td>" +
+                        "<td>"+data.anualidad+"</td>" +
                         "  </tr>")
                 $("#cargar_tabla").append(precontenedor)
                 for (var i = 0;i<=data.tabla.length;i++)
