@@ -16,7 +16,7 @@ $(document).ready(function (){
     objeto['n']=0
 
 
-    $(".V").keyup(function () {
+  $(".V").keyup(function () {
         objeto['V'] = $(this).val();
     })
     $(".A").keyup(function () {
